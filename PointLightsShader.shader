@@ -19,6 +19,9 @@
 			
 			#include "UnityCG.cginc"
 
+			float4 _MainTex_TexelSize;
+
+
 			struct VertIn
 			{
 				float4 vertex : POSITION;
