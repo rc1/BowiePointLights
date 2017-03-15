@@ -105,7 +105,7 @@ Material:
       second: 2.62
     - first:
         name: _MaskStrength
-      second: 0.85
+      second: 0
     - first:
         name: _Metallic
       second: 0

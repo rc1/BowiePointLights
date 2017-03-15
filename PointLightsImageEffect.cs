@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 using BowieCode;
 
@@ -13,14 +14,17 @@ namespace BowiePointLights {
 
 		public Material effectMaterial;
 
-		private const int MAX_LIGHTS = 128;
+		[Range( 0.0f, 1.0f )]
+		public float maskStrength = 0.0f;
+
+		private const int MAX_LIGHTS = 200;
 
 		private Vector4[] _lightPositions = new Vector4[ MAX_LIGHTS ];
 		private float[] _lightIntensities = new float[ MAX_LIGHTS ];
 		private float[] _lightRanges = new float[ MAX_LIGHTS ];
 		private Color[] _lightColors = new Color[ MAX_LIGHTS ];
 
-		public List<PointLightsPointLight> pointLightTargets;
+		private HashSet<PointLightsPointLight> pointLightTargets = new HashSet<PointLightsPointLight>();
 
 		void OnValidate () {
 			if ( isDefault ) {
@@ -41,22 +45,21 @@ namespace BowiePointLights {
 			_camera.depthTextureMode = DepthTextureMode.DepthNormals;
 		}
 
+		public int Count () {
+			return pointLightTargets.Count;
+		}
+
 		void UpdateLights () {
-			for ( int idx = 0; idx < MAX_LIGHTS; idx++ ) {
-				PointLightsPointLight pointLightTarget = null;
 
-				if ( idx < pointLightTargets.Count ) {
-					pointLightTarget = pointLightTargets[ idx ];
-				}
+			pointLightTargets.Take( MAX_LIGHTS ).ForEachWithIndex( ( pointLight, idx ) => {
+				_lightPositions[ idx ] = pointLight.position;
+				_lightIntensities[ idx ] = pointLight.intensity;
+				_lightRanges[ idx ] = pointLight.range;
+				_lightColors[ idx ] = pointLight.color;
+			} );
 
-				if ( pointLightTarget != null ) {
-					_lightPositions[ idx ] = pointLightTarget.position;
-					_lightIntensities[ idx ] = pointLightTarget.intensity;
-					_lightRanges[ idx ] = pointLightTarget.range;
-					_lightColors[ idx ] = pointLightTarget.color;
-				} else {
-					_lightIntensities[ idx ] = 0.0f;
-				}
+			for ( int idx = pointLightTargets.Count; idx < MAX_LIGHTS; idx++ ) {
+				_lightIntensities[ idx ] = 0.0f;
 			}
 		}
 
@@ -65,7 +68,7 @@ namespace BowiePointLights {
 		}
 
 		public void Remove ( PointLightsPointLight pointLight ) {
-			pointLightTargets.RemoveAll( pointLightInList => pointLightInList == pointLight );
+			pointLightTargets.Remove( pointLight );
 		}
 
 		[ImageEffectOpaque]
@@ -76,6 +79,8 @@ namespace BowiePointLights {
 			// Get the camera matrix to convert the view space normals to world normals
 			Matrix4x4 MV = _camera.cameraToWorldMatrix;
 			effectMaterial.SetMatrix( "_CameraMV", MV );
+
+			effectMaterial.SetFloat( "_MaskStrength", maskStrength );
 
 			effectMaterial.SetVectorArray( "_LightPositions", _lightPositions );
 			effectMaterial.SetColorArray( "_LightColors", _lightColors );

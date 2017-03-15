@@ -62,10 +62,10 @@
 			float4x4 _CameraMV;
 
 			float _MaskStrength;
-			float3 _LightPositions[128];
-			float4 _LightColors[128];
-			float _LightRanges[128];
-			float _LightIntensitys[128];
+			float3 _LightPositions[200];
+			float4 _LightColors[200];
+			float _LightRanges[200];
+			float _LightIntensitys[200];
 
 			float3 lightDistanceNormalised ( float3 surfacePosition, float3 lightPosition, float lightRange ) {
 				float dis = distance( surfacePosition, lightPosition );
@@ -120,10 +120,9 @@
 				float3 surfaceWorldNormal = mul((float3x3)_CameraMV, viewSpaceNormal);
 
 				// Preformance test the lights
-				for ( int i = 0; i < 128; i++ ) {
+				for ( int i = 0; i < 200; i++ ) {
 					addLight( surfaceColor, surfaceWorldPosition, surfaceWorldNormal, _LightPositions[ i ], _LightRanges[ i ], _LightColors[ i ], _LightIntensitys[ i ] );
 				}
-
 
 				return lerp( surfaceColor, sourceColor, maskColor.a * _MaskStrength );
 

@@ -25,20 +25,30 @@ namespace BowiePointLights {
 			}
 		}
 
+		void Awake () {
+			AddOrRemovePointLight();
+		}
+
+		void OnValidate () {
+			AddOrRemovePointLight();
+		}
+
 		void OnEnable () {
-			if ( addToDefault ) {
-				AddToDefaultPointLights();
-			}
+			AddOrRemovePointLight();
 		}
 
 		void OnDisable () {
-			if ( addToDefault ) {
-				RemoveFromDefaultPointLights();
-			}
+			AddOrRemovePointLight();
 		}
 
 		void OnDestroy () {
+			RemoveFromDefaultPointLights();
+		}
+
+		void AddOrRemovePointLight () {
 			if ( addToDefault ) {
+				AddToDefaultPointLights();
+			} else {
 				RemoveFromDefaultPointLights();
 			}
 		}
