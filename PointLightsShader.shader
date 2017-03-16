@@ -4,7 +4,6 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_AlphaMask ("Alpha Mask", 2D) = "black" {}
-		_MaskStrength ( "Mask Strength", Float ) = 1.0
 	}
 	SubShader
 	{
@@ -55,7 +54,6 @@
 			}
 			
 			sampler2D _MainTex;
-			sampler2D _AlphaMask;
 			sampler2D_float _CameraDepthNormalsTexture;
 
 			// The camera model view
@@ -72,8 +70,8 @@
 				return 1.0 - clamp( dis / lightRange, 0.0, 1.0 );
 			}
 
-			float easeLightDistance ( float v ) {
-				return v * v * v * v;
+			float easeLightDistance ( float p ) {
+				return -(p * (p - 2)); 
 			}
 
 			void addLight ( in out float4 surfaceColor, float3 surfacePosition, float3 surfaceNormal, float3 lightPosition, float lightRange, float4 lightColor, float lightIntensity ) {
@@ -102,7 +100,6 @@
 			{
 				// Get the source & mask color
 				float4 sourceColor = tex2D(_MainTex, i.uv);
-				float4 maskColor = tex2D(_AlphaMask, i.uv);
 
 				// Get the surface color
 				float4 surfaceColor = sourceColor;
@@ -124,7 +121,7 @@
 					addLight( surfaceColor, surfaceWorldPosition, surfaceWorldNormal, _LightPositions[ i ], _LightRanges[ i ], _LightColors[ i ], _LightIntensitys[ i ] );
 				}
 
-				return lerp( surfaceColor, sourceColor, maskColor.a * _MaskStrength );
+				return surfaceColor;
 
 			}
 

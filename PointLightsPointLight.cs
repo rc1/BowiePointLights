@@ -45,6 +45,10 @@ namespace BowiePointLights {
 			RemoveFromDefaultPointLights();
 		}
 
+		void Start () {
+			AddOrRemovePointLight();
+		}
+
 		void AddOrRemovePointLight () {
 			if ( addToDefault ) {
 				AddToDefaultPointLights();

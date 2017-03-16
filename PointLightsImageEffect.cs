@@ -14,9 +14,6 @@ namespace BowiePointLights {
 
 		public Material effectMaterial;
 
-		[Range( 0.0f, 1.0f )]
-		public float maskStrength = 0.0f;
-
 		private const int MAX_LIGHTS = 200;
 
 		private Vector4[] _lightPositions = new Vector4[ MAX_LIGHTS ];
@@ -79,8 +76,6 @@ namespace BowiePointLights {
 			// Get the camera matrix to convert the view space normals to world normals
 			Matrix4x4 MV = _camera.cameraToWorldMatrix;
 			effectMaterial.SetMatrix( "_CameraMV", MV );
-
-			effectMaterial.SetFloat( "_MaskStrength", maskStrength );
 
 			effectMaterial.SetVectorArray( "_LightPositions", _lightPositions );
 			effectMaterial.SetColorArray( "_LightColors", _lightColors );

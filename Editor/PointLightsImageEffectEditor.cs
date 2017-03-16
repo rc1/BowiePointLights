@@ -5,6 +5,9 @@ using UnityEditor;
 
 namespace BowiePointLights {
 
+	/// <summary>
+	/// Point lights image effect editor.
+	/// </summary>
 	[CustomEditor(typeof(PointLightsImageEffect))]
 	public class PointLightsImageEffectEditor : Editor {
 
